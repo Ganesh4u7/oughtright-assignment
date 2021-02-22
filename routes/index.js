@@ -28,6 +28,9 @@ const super_admin_edit_post = require("../controllers/super_admin_edit_post");
 const super_admin_delete_post = require("../controllers/super_admin_delete_post");
 const audit_log_analysis = require("../controllers/audit_log_analysis");
 
+router.get('/', (req, res) => {
+    res.send('Hello World!')
+  })
 
 //User realted apis
 router.post('/signup_user',signup_user);
