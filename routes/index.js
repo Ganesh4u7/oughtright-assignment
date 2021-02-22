@@ -27,6 +27,7 @@ const get_audit_logs = require("../controllers/get_audit_logs");
 const super_admin_edit_post = require("../controllers/super_admin_edit_post");
 const super_admin_delete_post = require("../controllers/super_admin_delete_post");
 const audit_log_analysis = require("../controllers/audit_log_analysis");
+const audit_log_requests_by_role = require("../controllers/audit_log_requests_by_role");
 
 router.get('/', (req, res) => {
     res.send('Hello World!')
@@ -50,14 +51,16 @@ router.post('/signup_super_admin',signup_super_admin);
 router.post('/login_super_admin',login_super_admin);
 router.get('/admin_requests',auth_middleware,admin_requests);
 router.post('/respond_to_request',auth_middleware,respond_to_request);
-router.delete('/super_admin_delete_post',super_admin_delete_post);
+router.delete('/super_admin_delete_post',auth_middleware,super_admin_delete_post);
 router.post('/super_admin_edit_post',auth_middleware,super_admin_edit_post);
 
 
 
 router.get('/get_posts',auth_middleware,get_posts);
 router.get('/get_audit_logs',auth_middleware,get_audit_logs);
-router.get('/audit_log_analysis',audit_log_analysis);
+
+router.get('/audit_log_requests_by_type',auth_middleware,audit_log_analysis);
+router.get('/audit_log_requests_by_role',auth_middleware,audit_log_requests_by_role)
 
 
 

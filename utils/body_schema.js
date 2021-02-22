@@ -72,11 +72,12 @@ const body_schemas = {
     _id: Joi.string().required(),
     updateDescription: Joi.string().required()
   }),
-  audit_log_analysis: Joi.object({
+  audit_log_requests_by_role: Joi.object({
+
+  }),
+  audit_log_requests_by_type: Joi.object({
 
   })
-  
-  
   
 }; 
 
