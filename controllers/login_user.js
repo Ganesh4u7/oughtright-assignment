@@ -1,8 +1,5 @@
-const mongoose = require("mongoose");
 
-const userSchema = require("../models/userSchema");
-const userData = mongoose.model('users',userSchema);
-
+const {userData} = require('../utils/mongoose_models');
 const encryptDecrypt = require('../utils/encrypt_decrypt');
 
 const jwt_token_issue = require("../utils/jwt_create_token");
@@ -14,8 +11,11 @@ const login_user = async( req,res,next) => {
         const user = req.body;
         let userDetails = await userData.findOne({email: user.email});
         if(userDetails){
-            let passwordCheck = encryptDecrypt.validPassword(user.password,userDetails.hash,userDetails.salt);
-        console.log(passwordCheck);
+
+            let passwordCheck =encryptDecrypt.validPassword(user.password,userDetails.hash);
+
+             console.log(passwordCheck);
+             
             if(passwordCheck){
                 const jwt =  jwt_token_issue.issueJWT(user);
 

@@ -1,7 +1,6 @@
-const mongoose = require("mongoose");
 
-const userSchema = require("../models/userSchema");
-const userData = mongoose.model('users',userSchema);
+
+const {userData} = require('../utils/mongoose_models');
 
 const encryptDecrypt = require('../utils/encrypt_decrypt');
 
@@ -9,10 +8,20 @@ const encryptDecrypt = require('../utils/encrypt_decrypt');
 const signup_user = async(req,res,next) =>{
 
     try{
-     const saltHash = encryptDecrypt.genPassword(req.body.password);
+
+      const user_exists = await userData.findOne({username: req.body.username.toLowerCase()});
+      
+      console.log(user_exists);
+
+    if(!user_exists){
+     
+
+    
+     const hashedPassword = encryptDecrypt.genPassword(req.body.password);
+
+     console.log(hashedPassword);
    
-     const salt = saltHash.salt;
-     const hash = saltHash.hash;
+     const hash = hashedPassword;
      const username = req.body.username.toLowerCase();
      const email = req.body.email.toLowerCase();
      const role = "user";
@@ -20,10 +29,11 @@ const signup_user = async(req,res,next) =>{
      let userDetails = new userData ({
          username,
          email,
-         salt,
          hash,
          role
      });
+
+     //console.log(saltHash);
 
      userDetails.save((err,data)=>{
         if(err){
@@ -34,6 +44,12 @@ const signup_user = async(req,res,next) =>{
             res.send({status:true,payload:data}); 
         }
     });
+
+       
+}
+else{
+    res.send({status:false,payload:"user exists"});
+}
 
 
 

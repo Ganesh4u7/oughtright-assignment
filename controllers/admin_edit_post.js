@@ -1,13 +1,7 @@
-const mongoose = require("mongoose");
 
-const adminSchema = require("../models/adminSchema");
-const adminData = mongoose.model('admins',adminSchema);
 
-const auditLogsSchema = require("../models/audit_logs");
-const auditLogs = mongoose.model('audit_logs',auditLogsSchema);
+const {auditLogs,adminData,postData} = require('../utils/mongoose_models');
 
-const postSchema = require("../models/postSchema");
-const postData = mongoose.model('posts',postSchema);
 
 const admin_edit_post = async (req,res,next) => {
 

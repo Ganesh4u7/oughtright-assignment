@@ -1,10 +1,6 @@
-const mongoose = require("mongoose");
 
-const postSchema = require("../models/postSchema");
-const postData = mongoose.model('posts',postSchema);
 
-const auditLogsSchema = require("../models/audit_logs");
-const auditLogs = mongoose.model('audit_logs',auditLogsSchema);
+const {postData,auditLogs} = require('../utils/mongoose_models');
 
 
 const get_own_posts = async (req,res,next)=>{

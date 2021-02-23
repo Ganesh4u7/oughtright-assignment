@@ -1,7 +1,6 @@
-const mongoose = require("mongoose");
 
-const adminSchema = require("../models/adminSchema");
-const adminData = mongoose.model('admins',adminSchema);
+
+const {adminData} = require('../utils/mongoose_models');
 
 const encryptDecrypt = require('../utils/encrypt_decrypt');
 
@@ -14,7 +13,7 @@ const login_admin = async( req,res,next) => {
         const admin = req.body;
         let adminDetails = await adminData.findOne({email: admin.email});
         if(adminDetails){
-            let passwordCheck = encryptDecrypt.validPassword(admin.password,adminDetails.hash,adminDetails.salt);
+            let passwordCheck = encryptDecrypt.validPassword(admin.password,adminDetails.hash);
         console.log(passwordCheck);
             if(passwordCheck){
                 const jwt =  jwt_token_issue.issueJWT(admin);
