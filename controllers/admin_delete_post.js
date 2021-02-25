@@ -12,45 +12,42 @@ const admin_delete_post = async (req,res,next) => {
 
         let admin_details = await adminData.findOne({username:admin_name});
 
-        if(admin_details){
+        if(!admin_details){
+       
+            res.send({status:false,payload:"Invalid admin"});
+            return;
+        }
 
             let post_details = await postData.findOne({_id});
 
-                if(post_details){
-                    let auditLogsData = new auditLogs ({
-                        
-                        deletedBy:admin_name,
-                        deletedAt:Date.now(),
-                        status:'pending',
-                        role:'admin',
-                        type:'delete',
-                        id:_id,
-                        postDetails:post_details,
-                        updateDescription: req.body.updateDescription,
-                        logReport:`admin : ${admin_name} requested a delete on post with Object Id: ${_id}`,
-                        logTime:Date.now()
-                    });
+            if(!post_details){
+                
+                res.send({status:false,payload:"Post with this id doesn't exist"});
+                return;
+            }
+            let auditLogsData = new auditLogs ({
+                
+                deletedBy:admin_name,
+                deletedAt:Date.now(),
+                status:'pending',
+                role:'admin',
+                type:'delete',
+                id:_id,
+                postDetails:post_details,
+                updateDescription: req.body.updateDescription,
+                logReport:`admin : ${admin_name} requested a delete on post with Object Id: ${_id}`,
+                logTime:Date.now()
+            });
 
-                    auditLogsData.save((err,data)=>{
-                        if(err){
-                            console.log(err);
-                            res.send({status:false,payload:"Error occurred"});
-                        }
-                        else{
-                            res.send({status:true,payload:"Post delete request sent"})
-                        }
-                    })
-
+            auditLogsData.save((err,data)=>{
+                if(err){
+                    console.log(err);
+                    res.send({status:false,payload:"Error occurred"});
+                    return;
                 }
-                else{
-                    res.send({status:false,payload:"Post with this id doesn't exist"});
-                }
-        }
-        else{
-            res.send({status:false,payload:"Invalid admin"});
-        }
-
-        
+                    res.send({status:true,payload:"Post delete request sent"})
+                
+            });
 
     }
     catch(error){

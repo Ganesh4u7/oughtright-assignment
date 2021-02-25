@@ -17,8 +17,8 @@ const get_own_posts = async (req,res,next)=>{
             if(err){
                 console.log(err);
                 res.send({status:false,payload:"Error occurred"});
+                return;
             }
-            else{
                 let audit_log = new auditLogs({
                     role:"user",
                     type:"get_posts",
@@ -26,17 +26,15 @@ const get_own_posts = async (req,res,next)=>{
                     logReport:`user : ${username} requested a get posts api call`,
                     logTime:Date.now()
                 });
-        
-                   audit_log.save((err1)=>{
-                        if(err){
-                            console.log(err1);
-                            res.send({status:true,payload:posts[0].data});
-                        }
-                        else{
-                            res.send({status:true,payload:posts[0].data});
-                        }
-                    });
-            }
+    
+                audit_log.save((err1)=>{
+                    if(err){
+                        console.log(err1);
+                        res.send({status:true,payload:posts[0].data});
+                        return;
+                    }
+                        res.send({status:true,payload:posts[0].data});
+                });
         });
 
     }

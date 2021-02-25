@@ -13,10 +13,11 @@ const signup_user = async(req,res,next) =>{
       
       console.log(user_exists);
 
-    if(!user_exists){
+    if(user_exists){
      
-
-    
+        res.send({status:false,payload:"user exists"});
+        return;
+    }
      const hashedPassword = encryptDecrypt.genPassword(req.body.password);
 
      console.log(hashedPassword);
@@ -38,20 +39,11 @@ const signup_user = async(req,res,next) =>{
      userDetails.save((err,data)=>{
         if(err){
             console.log(err);
-            res.send({status:false,payload:"Error Occurred"});  
+            res.send({status:false,payload:"Error Occurred"}); 
+            return; 
         }
-        else{
             res.send({status:true,payload:data}); 
-        }
     });
-
-       
-}
-else{
-    res.send({status:false,payload:"user exists"});
-}
-
-
 
     }
     catch(error){

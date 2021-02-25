@@ -11,40 +11,41 @@ const admin_requests = async(req,res,next) => {
 
         let super_admin_exists = await superAdminData.findOne({username: super_admin});
 
-        if(super_admin_exists){
+        if(!super_admin_exists){
+        
+            res.send({status:false,payload:"Invalid super admin"});
+            return;
+        }
             
-            let requests = await auditLogs.find({role:'admin',status:"pending"}).skip(page*10).limit(10);
+        let requests = await auditLogs.find({role:'admin',status:"pending"}).skip(page*10).limit(10);
 
-            if(requests.length > 0) {
+        if(!requests.length > 0) {
+                
+            res.send({status:true,payload:"no pending requests"});
+            return;
+        }
 
-                let audit_log = new auditLogs({
-                    type:"get_admin_requests",
-                    role:"super_admin",
-                    postDetails:requests,
-                    logReport:`super_admin : ${super_admin} has requested for admin requests`,
-                    logTime:Date.now()
+        let audit_log = new auditLogs({
+            type:"get_admin_requests",
+            role:"super_admin",
+            postDetails:requests,
+            logReport:`super_admin : ${super_admin} has requested for admin requests`,
+            logTime:Date.now()
 
-                });
+        });
 
-                audit_log.save((err)=>{
-                    if(err){
-                        console.log(err);
-                        res.send({status:true,payload:requests});
-                    }
-                    else{
-                        res.send({status:true,payload:requests});
-                    }
-                });
-
-               
+        audit_log.save((err)=>{
+            if(err){
+                console.log(err);
+                res.send({status:true,payload:requests});
             }
             else{
-                res.send({status:true,payload:"no pending requests"});
+                res.send({status:true,payload:requests});
             }
-        }
-        else{
-            res.send({status:false,payload:"Invalid super admin"});
-        }
+        });
+
+             
+       
     }
     catch(error){
         console.log(error);

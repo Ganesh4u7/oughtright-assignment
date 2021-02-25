@@ -11,7 +11,10 @@ const signup_admin = async(req,res,next) =>{
 
         const admin_exists = await adminData.findOne({username:req.body.username});
       
-       if(!admin_exists){
+       if(admin_exists){
+            res.send({status:false,payload:"admin exists"});
+            return;
+          }
             const saltHash = encryptDecrypt.genPassword(req.body.password);
         
         
@@ -30,18 +33,11 @@ const signup_admin = async(req,res,next) =>{
             adminDetails.save((err,data)=>{
                 if(err){
                     console.log(err);
-                    res.send({status:false,payload:"Error Occurred"});  
+                    res.send({status:false,payload:"Error Occurred"});
+                    return;  
                 }
-                else{
-                    res.send({status:true,payload:data}); 
-                }
+                res.send({status:true,payload:data}); 
             });
-
-            }
-    else{
-        res.send({status:false,payload:"admin exists"});
-    }
-
 
     }
     catch(error){

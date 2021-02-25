@@ -11,7 +11,11 @@ const get_posts = async (req,res,next)=>{
         console.log(page,role);
         let username = req.headers.username;
 
-       if(role =="user" || role =="admin" || role=="super_admin"){
+       if(role !=="user" || role !=="admin" || role !=="super_admin"){
+           
+          res.send({status:false,payload:"Invalid role"});
+          return;
+      } 
           
         postData.aggregate([{ '$match'    : { } },
                         { '$facet'    : {
@@ -21,8 +25,8 @@ const get_posts = async (req,res,next)=>{
             if(err){
                 console.log(err);
                 res.send({status:false,payload:"Error occurred"});
+                return;
             }
-            else{
                 // console.log(posts);
                 let audit_log = new auditLogs({
                     role,
@@ -31,22 +35,16 @@ const get_posts = async (req,res,next)=>{
                     logReport:`${role} : ${username} requested a get posts api call`,
                     logTime:Date.now()
                 });
-        
-                   audit_log.save((err1)=>{
-                        if(err){
-                            console.log(err1);
-                            res.send({status:true,payload:posts[0].data});
-                        }
-                        else{
-                            res.send({status:true,payload:posts[0].data});
-                        }
-                    });
-            }
-        });
-      }
-      else{
-          res.send({status:false,payload:"Invalid role"});
-      }  
+    
+                audit_log.save((err1)=>{
+                    if(err){
+                        console.log(err1);
+                        res.send({status:true,payload:posts[0].data});
+                        return;
+                    }
+                        res.send({status:true,payload:posts[0].data});
+                });
+        }); 
 
     }
     catch(error){
